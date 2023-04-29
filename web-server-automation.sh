@@ -12,7 +12,8 @@ yes | apt-get install ufw
 yes | sudo apt install curl
 yes | sudo apt install git
 yes | curl -O https://downloads.rclone.org/rclone-current-linux-amd64.deb
-sudo apt install ./rclone-current-linux-amd64.deb || { echo -e "\e[31mError installing rclone. Exiting.\e[0m"; exit 1; }
+sudo chown _apt rclone-current-linux-amd64.deb
+yes | sudo apt install ./rclone-current-linux-amd64.deb || { echo -e "\e[31mError installing rclone. Exiting.\e[0m"; exit 1; }
 
 # Prompt the user for their MEGA email and password
 echo -e "\e[33mDo you want to enter your Mega credentials? [Y/N]:\e[0m"
@@ -90,13 +91,12 @@ megadl "https://mega.nz/folder/OLJTlCwT#fZjlW2dqFuggpVUpgSaqRw" --path ./IronPen
 cd IronPentest-WebServer
 docker-compose build --no-cache && docker-compose up -d --no-recreate
 
-# Save the current directory path
-current_dir=$(pwd)
 
-# Change to the parent directory
-cd ..
+# Installing Web Server
+cd IronPentest-WebServer
+docker-compose build --no-cache && docker-compose up -d --no-recreate
 
-# Remove the files
-rm -f "$current_dir/rclone-current-linux-amd64.deb"
-rm -f "$current_dir/web-server-automation.sh"
-rm -f "$current_dir/get-docker.sh"
+# Remove files
+rm -f ../rclone-current-linux-amd64.deb
+rm -f ../web-server-automation.sh
+rm -f ../get-docker.sh
