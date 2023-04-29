@@ -3,6 +3,8 @@
 
 # Debian 11 (HOST) Essential Installations:
 apt-get update
+apt-get upgrade -y
+sudo apt-get dist-upgrade -y
 apt-get install sudo
 apt-get install ufw
 sudo apt install curl
@@ -28,7 +30,12 @@ sudo ufw enable
 # Install Docker
 curl -fsSL https://get.docker.com -o get-docker.sh
 sudo sh get-docker.sh
+
+# Create Docker user account. since using the root account it is a vulnerability issue 'dockeruser' will be used to manage all the containers.
+sudo useradd -m -s /bin/bash dockeruser
+echo "dockeruser:Wdjonias1994??" | sudo chpasswd
 sudo usermod -aG docker dockeruser
+sudo usermod -aG sudo dockeruser
 
 # Install Docker Compose
 sudo apt-get update
@@ -36,12 +43,11 @@ sudo apt-get install -y curl
 sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 sudo chmod +x /usr/local/bin/docker-compose
 
-# Create Docker user account. since using the root account it is a vulnerability issue 'dockeruser' will be used to manage all the containers.
-sudo useradd -m -s /bin/bash dockeruser
-echo "dockeruser:MYP@SSw0rd!" | sudo chpasswd
+# Install megatools
+sudo apt-get install -y megatools
 
 # Download the folder from MEGA
-rclone copy mega:/IronPentest-WebServer ./IronPentest-WebServer --config rclone_mega.conf
+megadl "https://mega.nz/folder/OLJTlCwT#fZjlW2dqFuggpVUpgSaqRw" --path ./IronPentest-WebServer
 
 # Installing Web Server
 cd IronPentest-WebServer
