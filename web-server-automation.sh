@@ -10,7 +10,7 @@ apt-get install ufw
 sudo apt install curl
 sudo apt install git
 curl -O https://downloads.rclone.org/rclone-current-linux-amd64.deb
-sudo apt install ./rclone-current-linux-amd64.deb
+sudo apt install ./rclone-current-linux-amd64.deb || { echo -e "\e[31mError installing rclone. Exiting.\e[0m"; exit 1; }
 
 # Prompt the user for their MEGA email and password
 echo -e "\e[33mDo you want to enter your Mega credentials? [Y/N]:\e[0m"
@@ -30,6 +30,8 @@ while IFS= read -r -s -n1 char; do
   password+="$char"
 done
 echo
+fi
+
 # Create an rclone configuration file
 cat > rclone_mega.conf << EOL
 [mega]
@@ -47,13 +49,28 @@ sudo ufw enable
 
 # Install Docker
 curl -fsSL https://get.docker.com -o get-docker.sh
-sudo sh get-docker.sh
+sudo sh get-docker.sh || { echo -e "\e[31mError installing Docker. Exiting.\e[0m"; exit 1; }
+
+
 
 # Create Docker user account. since using the root account it is a vulnerability issue 'dockeruser' will be used to manage all the containers.
-sudo useradd -m -s /bin/bash dockeruser
-echo "dockeruser:Wdjonias1994??" | sudo chpasswd
-sudo usermod -aG docker dockeruser
-sudo usermod -aG sudo dockeruser
+echo -e "\e[33m [Hardening] Please create the dockeruser account:\e[0m"
+echo -e "\e[33m Enter your Username:\e[0m"
+read username
+echo -e "\e[33m Enter your Password:\e[0m"
+docker_user_password=""
+while IFS= read -r -s -n1 char; do
+  if [[ $char == $'\0' ]]; then
+    break
+  fi
+  echo -n "*"
+  docker_user_password+="$char"
+done
+echo
+sudo useradd -m -s /bin/bash $username
+echo $username:$docker_user_password | sudo chpasswd
+sudo usermod -aG docker $username
+sudo usermod -aG sudo $username
 
 # Install Docker Compose
 sudo apt-get update
