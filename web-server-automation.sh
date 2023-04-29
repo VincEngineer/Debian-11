@@ -1,6 +1,8 @@
 #!/bin/bash
 # This readme is made with the purpose of automating the web server installation and save your time in future occasions
 
+
+
 # Debian 11 (HOST) Essential Installations:
 yes | apt-get update
 yes | apt-get upgrade -y
@@ -10,7 +12,7 @@ yes | apt-get install ufw
 yes | sudo apt install curl
 yes | sudo apt install git
 yes | curl -O https://downloads.rclone.org/rclone-current-linux-amd64.deb
-yes | sudo apt install ./rclone-current-linux-amd64.deb || { echo -e "\e[31mError installing rclone. Exiting.\e[0m"; exit 1; }
+sudo apt install ./rclone-current-linux-amd64.deb || { echo -e "\e[31mError installing rclone. Exiting.\e[0m"; exit 1; }
 
 # Prompt the user for their MEGA email and password
 echo -e "\e[33mDo you want to enter your Mega credentials? [Y/N]:\e[0m"
@@ -20,23 +22,25 @@ echo -e "\e[33 Visit https://mega.nz/ and create and account to automatically ba
 echo -e "\e[33mEnter your Mega email address:\e[0m"
 read mega_email
 echo -e "\e[33mEnter your Mega password:\e[0m"
-password=""
+mega_password=""
 while IFS= read -r -s -n1 char; do
   if [[ $char == $'\0' ]]; then
     break
   fi
   echo -n "*"
-  password+="$char"
+  mega_password+="$char"
 done
 echo
 fi
-
+# Obscure the password using rclone
+encrypted_mega_password=$(rclone obscure "$mega_password")
+  
 # Create an rclone configuration file
 cat > rclone_mega.conf << EOL
 [mega]
 type = mega
 user = $mega_email
-pass = $password
+pass = $encrypted_mega_password
 EOL
 
 yes | apt-get install net-tools
@@ -86,6 +90,13 @@ megadl "https://mega.nz/folder/OLJTlCwT#fZjlW2dqFuggpVUpgSaqRw" --path ./IronPen
 cd IronPentest-WebServer
 docker-compose build --no-cache && docker-compose up -d --no-recreate
 
-rm rclone-current-linux-amd64.deb
-rm web-server-automation.sh
-rm get-docker.sh
+# Save the current directory path
+current_dir=$(pwd)
+
+# Change to the parent directory
+cd ..
+
+# Remove the files
+rm -f "$current_dir/rclone-current-linux-amd64.deb"
+rm -f "$current_dir/web-server-automation.sh"
+rm -f "$current_dir/get-docker.sh"
