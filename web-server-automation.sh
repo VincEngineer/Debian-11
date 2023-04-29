@@ -47,6 +47,7 @@ sudo chmod +x /usr/local/bin/docker-compose
 sudo apt-get install -y megatools
 
 # Download the folder from MEGA
+mkdir IronPentest-WebServer
 megadl "https://mega.nz/folder/OLJTlCwT#fZjlW2dqFuggpVUpgSaqRw" --path ./IronPentest-WebServer
 
 # Installing Web Server
