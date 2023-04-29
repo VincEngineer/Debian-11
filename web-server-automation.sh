@@ -12,12 +12,30 @@ sudo apt install git
 curl -O https://downloads.rclone.org/rclone-current-linux-amd64.deb
 sudo apt install ./rclone-current-linux-amd64.deb
 
+# Prompt the user for their MEGA email and password
+echo -e "\e[33mDo you want to enter your Mega credentials? [Y/N]:\e[0m"
+read mega_choice
+
+if [[ $mega_choice =~ ^[Yy]$ ]]; then
+echo -e "\e[33 Visit https://mega.nz/ and create and account to automatically backup the database(You can Ignore this step)\e[0m"
+echo -e "\e[33mEnter your Mega email address:\e[0m"
+read mega_email
+echo -e "\e[33mEnter your Mega password:\e[0m"
+password=""
+while IFS= read -r -s -n1 char; do
+  if [[ $char == $'\0' ]]; then
+    break
+  fi
+  echo -n "*"
+  password+="$char"
+done
+echo
 # Create an rclone configuration file
 cat > rclone_mega.conf << EOL
 [mega]
 type = mega
-user = kernel.hardening@gmail.com
-pass = 3g74pvBoMemz5ZqRJguuyecqSenMwNtKG1OC
+user = $mega_email
+pass = $password
 EOL
 
 sudo apt-get install net-tools
