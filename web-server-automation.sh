@@ -52,26 +52,27 @@ yes | sudo apt install ./rclone-current-linux-amd64.deb || { echo -e "\e[31mErro
 echo -e "\e[33mDo you want to enter your Mega credentials? [Y/N]:\e[0m"
 read mega_choice
 if [[ $mega_choice =~ ^[Yy]$ ]]; then
-echo -e "\e[33 Visit https://mega.nz/ and create and account to automatically backup the database(You can Ignore this step)\e[0m"
-echo -e "\e[33mEnter your Mega email address:\e[0m"
-read mega_email
-echo -e "\e[33mEnter your Mega password:\e[0m"
-mega_password=""
-while IFS= read -r -s -n1 char; do
-  if [[ $char == $'\0' ]]; then
-    break
-	elif [[$char == $'\177']]; then
-	if [-n "$password"]; then
-		mega_password=${mega_password%?}
-		echo -ne "\b \b"
-  fi
-  else
-  echo -n "*"
-  mega_password+="$char"
-  fi
-done
-echo
+    echo -e "\e[33 Visit https://mega.nz/ and create and account to automatically backup the database(You can Ignore this step)\e[0m"
+    echo -e "\e[33mEnter your Mega email address:\e[0m"
+    read mega_email
+    echo -e "\e[33mEnter your Mega password:\e[0m"
+    mega_password=""
+    while IFS= read -r -s -n1 char; do
+        if [[ $char == $'\0' ]]; then
+            break
+        elif [[ $char == $'\177' ]]; then
+            if [ -n "$mega_password" ]; then
+                mega_password=${mega_password%?}
+                echo -ne "\b \b"
+            fi
+        else
+            echo -n "*"
+            mega_password+="$char"
+        fi
+    done
+    echo
 fi
+
 # Encrypt the password using rclone
 encrypted_mega_password=$(rclone obscure "$mega_password")
   
