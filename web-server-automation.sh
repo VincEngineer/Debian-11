@@ -9,6 +9,7 @@ comment
 
 
 # Debian 11 (HOST) Essential Installations:
+sudo su
 yes | apt-get update
 yes | apt-get upgrade -y
 yes | sudo apt-get dist-upgrade -y
@@ -64,14 +65,12 @@ yes | ufw allow from 80.233.0.0/16 to 172.18.0.2 port 5432 proto tcp
 yes | ufw enable
 
 # Install Docker
-curl -fsSL https://get.docker.com -o get-docker.sh
-sudo sh get-docker.sh || { echo -e "\e[31mError installing Docker. Exiting.\e[0m"; exit 1; }
-
-
+#curl -fsSL https://get.docker.com -o get-docker.sh
+#sudo sh get-docker.sh || { echo -e "\e[31mError installing Docker. Exiting.\e[0m"; exit 1; }
 
 # Install Docker Compose
-sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-sudo chmod +x /usr/local/bin/docker-compose
+#sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+#sudo chmod +x /usr/local/bin/docker-compose
 
 # Install megatools
 yes | sudo apt-get install -y megatools
@@ -84,10 +83,6 @@ megadl "https://mega.nz/folder/OLJTlCwT#fZjlW2dqFuggpVUpgSaqRw" --path ./IronPen
 cd IronPentest-WebServer
 docker-compose build --no-cache && docker-compose up -d --no-recreate
 
-
-# Installing Web Server
-cd IronPentest-WebServer
-docker-compose build --no-cache && docker-compose up -d --no-recreate
 
 # Remove files
 rm -f ../rclone-current-linux-amd64.deb
