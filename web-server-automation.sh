@@ -9,12 +9,12 @@ comment
 
 
 # Debian 11 (HOST) Essential Installations:
-sudo su
-yes | apt-get update
-yes | apt-get upgrade -y
+#sudo su
+yes | sudo apt-get update
+yes | sudo apt-get upgrade -y
 yes | sudo apt-get dist-upgrade -y
-yes | apt-get install sudo
-yes | apt-get install ufw
+yes | sudo apt-get install sudo
+yes | sudo apt-get install ufw
 yes | sudo apt install curl
 yes | sudo apt install git
 yes | curl -O https://downloads.rclone.org/rclone-current-linux-amd64.deb
@@ -57,7 +57,7 @@ user = $mega_email
 pass = $encrypted_mega_password
 EOL
 
-yes | apt-get install net-tools
+yes | sudo apt-get install net-tools
 yes | ufw default deny incoming
 yes | ufw default allow outgoing
 yes | ufw allow from 80.233.0.0/16 to any port 22 proto tcp
